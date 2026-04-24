@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>DRAC-X | Payment Gateway</title>
+  
+  <!-- LIBRARY QRIS DINAMIS -->
+  <script src="https://cdn.jsdelivr.net/npm/qris-dynamic@latest/dist/qris-dynamic.min.js"></script>
+  
+  <!-- ICON & FONT -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root{
+      --warna-utama: #00f0ff;
+      --warna-gelap: #0077ff;
+      --bg-utama: #020617;
+      --bg-card: #0f172a;
+      --text-putih: #f8fafc;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-utama);
+      color: var(--text-putih);
+      padding: 20px;
+      background-image: 
+        radial-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px),
+        radial-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+    }
+    .logo-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 5px;
+      background: linear-gradient(135deg, var(--warna-utama), var(--warna-gelap));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+    }
+    .subtitle { text-align: center; color: #94a3b8; margin-bottom: 30px; font-size: 12px; }
+    .container { max-width: 400px; margin: auto; }
+    .payment-card {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 20px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0, 119, 255, 0.1);
+    }
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--warna-utama);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(0,240,255,0.3);
+      border-radius: 12px;
+      color: #fff;
+      text-align: center;
+    }
+    input:focus { outline: none; border-color: var(--warna-utama); box-shadow: 0 0 15px rgba(0,240,255,0.2); }
+    .btn-buat {
+      background: linear-gradient(to right, var(--warna-utama), var(--warna-gelap));
+      color: #000 !important; font-weight: 900; font-size: 13px;
+      text-transform: uppercase; letter-spacing: 1.5px; border: none;
+      border-radius: 12px; padding: 14px 0; width: 100%;
+      text-decoration: none !important; display: block; text-align: center;
+      margin-top: 10px; cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0, 240, 255, 0.2);
+    }
+    .btn-buat:hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+    /* STYLE BOX QRIS */
+    #qris-box {
+      display: none; background: #fff; padding: 25px; border-radius: 15px;
+      text-align: center; margin-top: 20px; border: 2px solid var(--warna-utama);
+    }
+    #qris-image { width: 250px; height: 250px; }
+    .qris-text { color: #000; font-weight: bold; margin-bottom: 10px; font-size: 14px; }
+    .minimal-text {
+      background: rgba(255,200,0,0.1);
+      color: #ffcc00;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 12px;
+      font-weight: bold;
+      border: 1px solid rgba(255,200,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="logo-text">DRAC-X</h1>
+  <p class="subtitle">AUTOMATIC PAYMENT GATEWAY SYSTEM</p>
+
+<div class="container">
+
+  <div class="payment-card">
+    <h3 style="margin-bottom: 15px; color: var(--warna-utama);">SISTEM TOP UP OTOMATIS</h3>
+
+    <!-- INFO MINIMAL -->
+    <div class="minimal-text">
+      ⚠️ MINIMAL TOP UP Rp 50.000
+    </div>
+
+    <!-- KOLOM INPUTAN -->
+    <div class="input-group">
+      <label>Masukkan Nominal (Rp)</label>
+      <input type="number" id="nominalInput" placeholder="Contoh: 50000" min="50000">
+    </div>
+
+    <!-- TOMBOL BUAT QR -->
+    <button class="btn-buat" onclick="buatQrOtomatis()">
+      <i data-lucide="zap"></i> BUAT QRIS OTOMATIS
+    </button>
+  </div>
+
+  <!-- TEMPAT KELUARNYA QR -->
+  <div id="qris-box">
+    <div class="qris-text">⚡ SCAN QRIS DRAC-X</div>
+    <img id="qris-image" src="" alt="QRIS">
+    <p style="color:#666; font-size:12px; margin-top:10px;">Nominal Sudah Terisi Otomatis</p>
+  </div>
+
+</div>
+
+<script>
+  // ✅ KODE QRIS DANA KAMU UDAH TERISI OTOMATIS DISINI!
+  const QRIS_CODE = "00020101021126570011ID.DANA.WWW011893600915302405147802090240514780303UMI51440014ID.CO.QRIS.WWW0215ID10265091908350303UMI5204581253033605802ID5915Angkringan Kita6015Kab. Muara Enim6105313536304B1A6"; 
+
+  // ✨ FUNGSI UTAMA
+  function buatQrOtomatis() {
+    // 1. Ambil angka yang diketik user
+    const nominal = document.getElementById('nominalInput').value;
+    
+    // 2. Cek Minimal 50.000
+    if(nominal == "" || parseInt(nominal) < 50000) {
+      alert("⚠️ Minimal Top Up adalah Rp 50.000 ya!");
+      return;
+    }
+
+    // 3. Proses QRIS + Nominal
+    const qrisFinal = QrisDynamic.generate({
+      qris: QRIS_CODE,
+      amount: parseInt(nominal)
+    });
+
+    // 4. Bikin jadi Gambar
+    const linkGambar = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${qrisFinal}`;
+    
+    // 5. Tampilin ke layar
+    document.getElementById('qris-image').src = linkGambar;
+    document.getElementById('qris-box').style.display = "block";
+    document.getElementById('qris-box').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Load Icons
+  lucide.createIcons();
+</script>
+
+</body>
+</html>
