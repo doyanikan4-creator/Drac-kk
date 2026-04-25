@@ -1,50 +1,81 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<title>Generator Pembayaran Kris Dinamis</title>
-<style>
-  body { font-family: Arial, sans-serif; padding: 20px; }
-  input { padding: 10px; font-size: 1em; width: 200px; }
-  button { padding: 10px; font-size: 1em; margin-left: 10px; }
-  #output { margin-top: 20px; }
-</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drac-X | Penarikan Dana</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h2>Isi Nominal Pembayaran</h2>
-<p>Minimal Rp 20.000</p>
-<input type="number" id="nominal" placeholder="Masukkan nominal" />
-<button onclick="generate()">Buat QR & Link</button>
+  <div class="container">
+    <div class="header">
+      <h1>Drac-X</h1>
+      <p>Form Penarikan Dana</p>
+    </div>
 
-<div id="output">
-  <p>Link Kris:</p>
-  <a id="linkKris" href="" target="_blank"></a>
-  <p>QR Code:</p>
-  <canvas id="qrcode" width="200" height="200"></canvas>
-</div>
+    <form id="formPenarikan" action="kirim.php" method="POST">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" required placeholder="Masukkan username">
+      </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-<script>
-function generate() {
-  const nominal = document.getElementById('nominal').value;
-  const krisID = '00020101021126570011ID.DANA.WWW011893600915302405147802090240514780303UMI51440014ID.CO.QRIS.WWW0215ID10265091908350303UMI5204581253033605802ID5915Angkringan Kita6015Kab. Muara Enim6105313536304B1A6'; // Ganti dengan ID Kris Anda
-  if (!nominal || nominal < 20000) {
-    alert('Minimal Rp 20.000');
-    return;
-  }
-  // Buat link sesuai format Kris Anda
-  const urlKris = `https://kris.com/pay?kris_id=${krisID}&amount=${nominal}`;
+      <div class="form-group">
+        <label>Nama Akun</label>
+        <input type="text" name="nama_akun" required placeholder="Masukkan nama akun">
+      </div>
 
-  // Tampilkan link
-  const linkElement = document.getElementById('linkKris');
-  linkElement.href = urlKris;
-  linkElement.textContent = urlKris;
+      <div class="form-group">
+        <label>Bank Tujuan</label>
+        <select name="bank_tujuan" required>
+          <option value="">-- Pilih Bank / E-Wallet --</option>
+          <optgroup label="Bank">
+            <option value="BCA">BCA</option>
+            <option value="BRI">BRI</option>
+            <option value="BNI">BNI</option>
+            <option value="Mandiri">Mandiri</option>
+            <option value="CIMB Niaga">CIMB Niaga</option>
+            <option value="Danamon">Danamon</option>
+            <option value="Permata">Permata</option>
+            <option value="BSI">BSI</option>
+            <option value="BTN">BTN</option>
+            <option value="Mega">Mega</option>
+            <option value="Panin">Panin</option>
+            <option value="Bank Jago">Bank Jago</option>
+            <option value="SeaBank">SeaBank</option>
+            <option value="Neo Commerce">Neo Commerce</option>
+            <option value="Allo Bank">Allo Bank</option>
+          </optgroup>
+          <optgroup label="E-Wallet">
+            <option value="DANA">DANA</option>
+            <option value="OVO">OVO</option>
+            <option value="GoPay">GoPay</option>
+            <option value="ShopeePay">ShopeePay</option>
+            <option value="LinkAja">LinkAja</option>
+            <option value="Sakuku">Sakuku</option>
+          </optgroup>
+        </select>
+      </div>
 
-  // Generate QR code
-  QRCode.toCanvas(document.getElementById('qrcode'), urlKris, { width: 200 }, function (error) {
-    if (error) console.error(error);
-  });
-}
-</script>
+      <div class="form-group">
+        <label>Nama Akun Bank</label>
+        <input type="text" name="nama_akun_bank" required placeholder="Nama pemilik rekening">
+      </div>
+
+      <div class="form-group">
+        <label>Nomor Rekening</label>
+        <input type="text" name="nomor_rekening" required placeholder="Masukkan nomor rekening" inputmode="numeric">
+      </div>
+
+      <div class="form-group">
+        <label>Nominal Penarikan</label>
+        <input type="number" name="nominal" required placeholder="Minimal Rp20.000" min="20000">
+        <small class="info">Minimal penarikan Rp20.000</small>
+      </div>
+
+      <button type="submit" class="btn-submit">Ajukan Penarikan</button>
+    </form>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
